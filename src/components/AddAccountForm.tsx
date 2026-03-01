@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AccountFormData } from '../types/account';
 import { ACCOUNT_TYPES, ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
+import { CURRENCIES } from '../constants/currencies';
 import { Plus } from 'lucide-react';
 
 interface AddAccountFormProps {
@@ -123,9 +124,9 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
                     value={formData.currency}
                     onChange={handleChange}
                   >
-                    <option value="RUB">RUB</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
+                    <option value={CURRENCIES.RUB}>{CURRENCIES.RUB}</option>
+                    <option value={CURRENCIES.USD}>{CURRENCIES.USD}</option>
+                    <option value={CURRENCIES.EUR}>{CURRENCIES.EUR}</option>
                   </select>
                 </div>
               </div>

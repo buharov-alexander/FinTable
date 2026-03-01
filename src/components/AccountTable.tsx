@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { Account } from '../types/account';
 import { ACCOUNT_TYPES, ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
+import { CURRENCIES } from '../constants/currencies';
 import { Edit2, Trash2, Save, X } from 'lucide-react';
 
 interface AccountTableProps {
@@ -117,12 +118,12 @@ const AccountTable: React.FC<AccountTableProps> = ({
         return isEditing ? (
           <select
             value={editingData.currency || ''}
-            onChange={(e) => setEditingData({ ...editingData, currency: e.target.value })}
+            onChange={(e) => setEditingData({ ...editingData, currency: e.target.value as Account['currency'] })}
             className="select is-small"
           >
-            <option value="RUB">RUB</option>
-            <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
+            <option value={CURRENCIES.RUB}>{CURRENCIES.RUB}</option>
+            <option value={CURRENCIES.USD}>{CURRENCIES.USD}</option>
+            <option value={CURRENCIES.EUR}>{CURRENCIES.EUR}</option>
           </select>
         ) : (
           <span className="tag is-primary is-light">
