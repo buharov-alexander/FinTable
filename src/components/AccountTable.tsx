@@ -59,7 +59,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
             type="text"
             value={editingData.name || ''}
             onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
-            className="w-full px-2 py-1 border rounded"
+            className="input is-small"
           />
         ) : (
           row.getValue('name')
@@ -76,7 +76,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
             type="text"
             value={editingData.bank || ''}
             onChange={(e) => setEditingData({ ...editingData, bank: e.target.value })}
-            className="w-full px-2 py-1 border rounded"
+            className="input is-small"
           />
         ) : (
           row.getValue('bank')
@@ -99,7 +99,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
           <select
             value={editingData.type || ''}
             onChange={(e) => setEditingData({ ...editingData, type: e.target.value as Account['type'] })}
-            className="w-full px-2 py-1 border rounded"
+            className="select is-small"
           >
             <option value="checking">Текущий</option>
             <option value="savings">Накопительный</option>
@@ -107,7 +107,9 @@ const AccountTable: React.FC<AccountTableProps> = ({
             <option value="investment">Инвестиционный</option>
           </select>
         ) : (
-          typeLabels[row.original.type as keyof typeof typeLabels]
+          <span className="tag is-info is-light">
+            {typeLabels[row.original.type as keyof typeof typeLabels]}
+          </span>
         );
       },
     },
@@ -120,14 +122,16 @@ const AccountTable: React.FC<AccountTableProps> = ({
           <select
             value={editingData.currency || ''}
             onChange={(e) => setEditingData({ ...editingData, currency: e.target.value })}
-            className="w-full px-2 py-1 border rounded"
+            className="select is-small"
           >
             <option value="RUB">RUB</option>
             <option value="USD">USD</option>
             <option value="EUR">EUR</option>
           </select>
         ) : (
-          row.getValue('currency')
+          <span className="tag is-primary is-light">
+            {row.getValue('currency')}
+          </span>
         );
       },
     },
@@ -148,10 +152,10 @@ const AccountTable: React.FC<AccountTableProps> = ({
             step="0.01"
             value={editingData.balance || ''}
             onChange={(e) => setEditingData({ ...editingData, balance: parseFloat(e.target.value) || 0 })}
-            className="w-full px-2 py-1 border rounded"
+            className="input is-small"
           />
         ) : (
-          <span className={balance < 0 ? 'text-red-600' : 'text-green-600'}>
+          <span className={balance < 0 ? 'has-text-danger' : 'has-text-success'}>
             {formattedBalance}
           </span>
         );
@@ -164,19 +168,19 @@ const AccountTable: React.FC<AccountTableProps> = ({
         const isEditing = editingId === row.original.id;
         
         return (
-          <div className="flex space-x-2">
+          <div className="buttons are-small">
             {isEditing ? (
               <>
                 <button
                   onClick={handleSave}
-                  className="p-1 text-green-600 hover:bg-green-50 rounded"
+                  className="button is-success is-small"
                   title="Сохранить"
                 >
                   <Save size={16} />
                 </button>
                 <button
                   onClick={handleCancel}
-                  className="p-1 text-gray-600 hover:bg-gray-50 rounded"
+                  className="button is-light is-small"
                   title="Отмена"
                 >
                   <X size={16} />
@@ -186,14 +190,14 @@ const AccountTable: React.FC<AccountTableProps> = ({
               <>
                 <button
                   onClick={() => handleEdit(row.original)}
-                  className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                  className="button is-info is-small"
                   title="Редактировать"
                 >
                   <Edit2 size={16} />
                 </button>
                 <button
                   onClick={() => handleDelete(row.original.id)}
-                  className="p-1 text-red-600 hover:bg-red-50 rounded"
+                  className="button is-danger is-small"
                   title="Удалить"
                 >
                   <Trash2 size={16} />
@@ -214,23 +218,21 @@ const AccountTable: React.FC<AccountTableProps> = ({
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="text-gray-500">Загрузка...</div>
+      <div className="has-text-centered py-6">
+        <div className="loader"></div>
+        <p className="has-text-grey mt-4">Загрузка...</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-        <thead className="bg-gray-50">
+    <div className="table-container">
+      <table className="table is-fullwidth is-striped is-hoverable">
+        <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
-                >
+                <th key={header.id} className="has-text-grey">
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -242,14 +244,11 @@ const AccountTable: React.FC<AccountTableProps> = ({
             </tr>
           ))}
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-50">
+            <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-                >
+                <td key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
