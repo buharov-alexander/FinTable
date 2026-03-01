@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import AccountTable from './components/AccountTable';
 import AddAccountForm from './components/AddAccountForm';
+import ExchangeRatesWidget from './components/ExchangeRatesWidget';
 import { useAccounts } from './hooks/useAccounts';
 import 'bulma/css/bulma.min.css';
 
@@ -37,10 +38,17 @@ function AppContent() {
   return (
     <div className="container is-fluid" style={{ padding: '2rem 1rem' }}>
       <div className="container" style={{ maxWidth: '1280px', margin: '0 auto' }}>
-        <section className="section" style={{ padding: '0 0 2rem 0' }}>
-          <h1 className="title is-2">FinTable</h1>
-          <p className="subtitle has-text-grey">Управление банковскими счетами</p>
-        </section>
+        <div className="is-flex is-justify-content-space-between is-align-items-start mb-5">
+          <div style={{ flex: 1 }}>
+            <section className="section" style={{ padding: '0 0 2rem 0' }}>
+              <h1 className="title is-2">FinTable</h1>
+              <p className="subtitle has-text-grey">Управление банковскими счетами</p>
+            </section>
+          </div>
+          <div className="ml-4">
+            <ExchangeRatesWidget />
+          </div>
+        </div>
 
         <section className="section" style={{ padding: '0' }}>
           <div className="level" style={{ marginBottom: '1.5rem' }}>
