@@ -1,8 +1,10 @@
+import { AccountType } from '../constants/accountTypes';
+
 export interface Account {
   id: string;
   name: string;
   bank: string;
-  type: 'checking' | 'savings' | 'credit' | 'investment';
+  type: AccountType;
   currency: string;
   balance: number;
 }

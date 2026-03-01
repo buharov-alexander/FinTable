@@ -1,4 +1,5 @@
 import { Account, AccountFormData } from '../types/account';
+import { ACCOUNT_TYPES } from '../constants/accountTypes';
 
 // Моковые данные
 const mockAccounts: Account[] = [
@@ -6,7 +7,7 @@ const mockAccounts: Account[] = [
     id: '1',
     name: 'Основной счет',
     bank: 'СберБанк',
-    type: 'checking',
+    type: ACCOUNT_TYPES.SAVINGS,
     currency: 'RUB',
     balance: 125000.50
   },
@@ -14,33 +15,33 @@ const mockAccounts: Account[] = [
     id: '2',
     name: 'Накопительный счет',
     bank: 'Тинькофф',
-    type: 'savings',
+    type: ACCOUNT_TYPES.DEPOSIT,
     currency: 'RUB',
     balance: 45000.00
   },
   {
     id: '3',
-    name: 'Кредитная карта',
-    bank: 'Альфа-Банк',
-    type: 'credit',
-    currency: 'RUB',
-    balance: -5000.00
-  },
-  {
-    id: '4',
-    name: 'Инвестиционный счет',
+    name: 'Инвестиционный портфель',
     bank: 'ВТБ',
-    type: 'investment',
+    type: ACCOUNT_TYPES.INVESTMENT,
     currency: 'USD',
     balance: 2500.75
   },
   {
+    id: '4',
+    name: 'Криптовалютный кошелек',
+    bank: 'Binance',
+    type: ACCOUNT_TYPES.CRYPTO,
+    currency: 'USD',
+    balance: 5000.00
+  },
+  {
     id: '5',
-    name: 'Зарплатный проект',
-    bank: 'Газпромбанк',
-    type: 'checking',
+    name: 'Наличные',
+    bank: 'Кошелек',
+    type: ACCOUNT_TYPES.CASH,
     currency: 'RUB',
-    balance: 85000.30
+    balance: 15000.00
   }
 ];
 

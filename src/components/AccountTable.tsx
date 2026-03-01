@@ -6,6 +6,7 @@ import {
   ColumnDef,
 } from '@tanstack/react-table';
 import { Account } from '../types/account';
+import { ACCOUNT_TYPES, ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
 import { Edit2, Trash2, Save, X } from 'lucide-react';
 
 interface AccountTableProps {
@@ -88,12 +89,6 @@ const AccountTable: React.FC<AccountTableProps> = ({
       header: 'Тип счета',
       cell: ({ row }) => {
         const isEditing = editingId === row.original.id;
-        const typeLabels = {
-          checking: 'Текущий',
-          savings: 'Накопительный',
-          credit: 'Кредитный',
-          investment: 'Инвестиционный'
-        };
         
         return isEditing ? (
           <select
@@ -101,14 +96,15 @@ const AccountTable: React.FC<AccountTableProps> = ({
             onChange={(e) => setEditingData({ ...editingData, type: e.target.value as Account['type'] })}
             className="select is-small"
           >
-            <option value="checking">Текущий</option>
-            <option value="savings">Накопительный</option>
-            <option value="credit">Кредитный</option>
-            <option value="investment">Инвестиционный</option>
+            <option value={ACCOUNT_TYPES.CASH}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.CASH]}</option>
+            <option value={ACCOUNT_TYPES.DEPOSIT}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.DEPOSIT]}</option>
+            <option value={ACCOUNT_TYPES.SAVINGS}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.SAVINGS]}</option>
+            <option value={ACCOUNT_TYPES.INVESTMENT}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.INVESTMENT]}</option>
+            <option value={ACCOUNT_TYPES.CRYPTO}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.CRYPTO]}</option>
           </select>
         ) : (
           <span className="tag is-info is-light">
-            {typeLabels[row.original.type as keyof typeof typeLabels]}
+            {ACCOUNT_TYPE_LABELS[row.original.type]}
           </span>
         );
       },

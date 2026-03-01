@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AccountFormData } from '../types/account';
+import { ACCOUNT_TYPES, ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
 import { Plus } from 'lucide-react';
 
 interface AddAccountFormProps {
@@ -11,7 +12,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
   const [formData, setFormData] = useState<AccountFormData>({
     name: '',
     bank: '',
-    type: 'checking',
+    type: ACCOUNT_TYPES.CASH,
     currency: 'RUB',
     balance: 0
   });
@@ -24,7 +25,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
       setFormData({
         name: '',
         bank: '',
-        type: 'checking',
+        type: ACCOUNT_TYPES.CASH,
         currency: 'RUB',
         balance: 0
       });
@@ -101,10 +102,11 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
                     value={formData.type}
                     onChange={handleChange}
                   >
-                    <option value="checking">Текущий</option>
-                    <option value="savings">Накопительный</option>
-                    <option value="credit">Кредитный</option>
-                    <option value="investment">Инвестиционный</option>
+                    <option value={ACCOUNT_TYPES.CASH}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.CASH]}</option>
+                    <option value={ACCOUNT_TYPES.DEPOSIT}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.DEPOSIT]}</option>
+                    <option value={ACCOUNT_TYPES.SAVINGS}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.SAVINGS]}</option>
+                    <option value={ACCOUNT_TYPES.INVESTMENT}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.INVESTMENT]}</option>
+                    <option value={ACCOUNT_TYPES.CRYPTO}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.CRYPTO]}</option>
                   </select>
                 </div>
               </div>
