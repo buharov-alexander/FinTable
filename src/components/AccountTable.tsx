@@ -8,6 +8,8 @@ import {
 import { Account } from '../types/account';
 import { ACCOUNT_TYPES, ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
 import { CURRENCIES } from '../constants/currencies';
+import { calculateTotalBalance } from '../utils/currencyConverter';
+import { useExchangeRates } from '../hooks/useExchangeRates';
 import { Edit2, Trash2, Save, X } from 'lucide-react';
 
 interface AccountTableProps {
@@ -25,6 +27,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
 }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<Partial<Account>>({});
+  const { rates } = useExchangeRates();
 
   const handleEdit = (account: Account) => {
     setEditingId(account.id);
@@ -252,6 +255,21 @@ const AccountTable: React.FC<AccountTableProps> = ({
             </tr>
           ))}
         </tbody>
+        {rates && (
+          <tfoot>
+            <tr className="has-background-light has-text-weight-bold">
+              <td colSpan={4} className="has-text-right">
+                Итого:
+              </td>
+              <td colSpan={2} className="has-text-success">
+                {new Intl.NumberFormat('ru-RU', {
+                  style: 'currency',
+                  currency: 'RUB',
+                }).format(calculateTotalBalance(accounts, rates))}
+              </td>
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );
