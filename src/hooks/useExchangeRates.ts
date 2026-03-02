@@ -11,7 +11,7 @@ export const useExchangeRates = () => {
     queryKey: ['exchangeRates'],
     queryFn: () => exchangeRatesApi.getExchangeRates(),
     staleTime: 5 * 60 * 1000, // Кэшировать на 5 минут
-    refetchInterval: 5 * 60 * 1000, // Обновлять каждые 5 минут
+    refetchInterval: 15 * 60 * 1000, // Обновлять каждые 15 минут
   });
 
   return {

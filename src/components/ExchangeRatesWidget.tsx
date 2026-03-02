@@ -5,6 +5,13 @@ import { RefreshCw } from 'lucide-react';
 const ExchangeRatesWidget: React.FC = () => {
   const { rates, isLoading, error, refetch } = useExchangeRates();
 
+  const formatLastUpdate = () => {
+    return new Date().toLocaleTimeString('ru-RU', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
   if (error) {
     return (
       <div className="notification is-danger is-light" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
@@ -37,9 +44,12 @@ const ExchangeRatesWidget: React.FC = () => {
             <span className="has-text-grey">USD:</span>
             <span className="has-text-weight-semibold">{rates.USD.toFixed(2)} ₽</span>
           </div>
-          <div className="is-flex is-justify-content-space-between">
+          <div className="is-flex is-justify-content-space-between mb-2">
             <span className="has-text-grey">EUR:</span>
             <span className="has-text-weight-semibold">{rates.EUR.toFixed(2)} ₽</span>
+          </div>
+          <div className="has-text-grey has-text-centered" style={{ fontSize: '0.75rem' }}>
+            Обновлено: {formatLastUpdate()}
           </div>
         </div>
       ) : null}
