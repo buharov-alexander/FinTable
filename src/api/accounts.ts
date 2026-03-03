@@ -1,90 +1,60 @@
 import { Account, AccountFormData } from '../types/account';
-import { ACCOUNT_TYPES } from '../constants/accountTypes';
-
-// Моковые данные
-const mockAccounts: Account[] = [
-  {
-    id: '1',
-    name: 'Основной счет',
-    bank: 'СберБанк',
-    type: ACCOUNT_TYPES.SAVINGS,
-    currency: 'RUB',
-    balance: 125000.50
-  },
-  {
-    id: '2',
-    name: 'Накопительный счет',
-    bank: 'Тинькофф',
-    type: ACCOUNT_TYPES.DEPOSIT,
-    currency: 'RUB',
-    balance: 45000.00
-  },
-  {
-    id: '3',
-    name: 'Инвестиционный портфель',
-    bank: 'ВТБ',
-    type: ACCOUNT_TYPES.INVESTMENT,
-    currency: 'USD',
-    balance: 2500.75
-  },
-  {
-    id: '4',
-    name: 'Криптовалютный кошелек',
-    bank: 'Binance',
-    type: ACCOUNT_TYPES.CRYPTO,
-    currency: 'USD',
-    balance: 5000.00
-  },
-  {
-    id: '5',
-    name: 'Наличные',
-    bank: 'Кошелек',
-    type: ACCOUNT_TYPES.CASH,
-    currency: 'RUB',
-    balance: 15000.00
-  }
-];
-
-// Имитация задержки сети
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+import { supabase } from '../lib/supabase';
 
 export const accountsApi = {
   // Получение всех счетов
   async getAccounts(): Promise<Account[]> {
-    await delay(500);
-    return [...mockAccounts];
+    const { data: accounts, error } = await supabase
+      .from('accounts')
+      .select('*');
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return accounts || [];
   },
 
   // Создание нового счета
   async createAccount(accountData: AccountFormData): Promise<Account> {
-    await delay(300);
-    const newAccount: Account = {
-      id: Date.now().toString(),
-      ...accountData
-    };
-    mockAccounts.push(newAccount);
-    return newAccount;
+    const { data: account, error } = await supabase
+      .from('accounts')
+      .insert(accountData)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return account;
   },
 
   // Обновление счета
   async updateAccount(id: string, accountData: Partial<AccountFormData>): Promise<Account> {
-    await delay(300);
-    const index = mockAccounts.findIndex(acc => acc.id === id);
-    if (index === -1) {
-      throw new Error('Счет не найден');
+    const { data: account, error } = await supabase
+      .from('accounts')
+      .update(accountData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
     }
-    
-    mockAccounts[index] = { ...mockAccounts[index], ...accountData };
-    return mockAccounts[index];
+
+    return account;
   },
 
   // Удаление счета
   async deleteAccount(id: string): Promise<void> {
-    await delay(300);
-    const index = mockAccounts.findIndex(acc => acc.id === id);
-    if (index === -1) {
-      throw new Error('Счет не найден');
+    const { error } = await supabase
+      .from('accounts')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      throw new Error(error.message);
     }
-    mockAccounts.splice(index, 1);
   }
 };

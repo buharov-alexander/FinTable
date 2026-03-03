@@ -1,9 +1,9 @@
 export const ACCOUNT_TYPES = {
-  CASH: 'cash',
-  DEPOSIT: 'deposit',
-  SAVINGS: 'savings',
-  INVESTMENT: 'investment',
-  CRYPTO: 'crypto'
+  CASH: 'CASH',
+  DEPOSIT: 'DEPOSIT',
+  SAVINGS: 'SAVINGS',
+  INVESTMENT: 'INVESTMENT',
+  CRYPTO: 'CRYPTO'
 } as const;
 
 export const ACCOUNT_TYPE_LABELS = {
