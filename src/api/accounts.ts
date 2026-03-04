@@ -5,7 +5,7 @@ export const accountsApi = {
   // Получение всех счетов
   async getAccounts(): Promise<Account[]> {
     const { data: accounts, error } = await supabase
-      .from('accounts')
+      .from('accounts_with_current_balance')
       .select('*');
 
     if (error) {
