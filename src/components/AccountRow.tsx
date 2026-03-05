@@ -7,12 +7,14 @@ interface AccountRowProps {
   account: Account;
   onUpdateAccountBalance: (id: string, balance: number) => void;
   onDeleteAccount: (id: string) => void;
+  onAccountClick: (account: Account) => void;
 }
 
 const AccountRow: React.FC<AccountRowProps> = ({
   account,
   onUpdateAccountBalance,
-  onDeleteAccount
+  onDeleteAccount,
+  onAccountClick
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingBalance, setEditingBalance] = useState<number>(0);
@@ -44,7 +46,15 @@ const AccountRow: React.FC<AccountRowProps> = ({
 
   return (
     <tr>
-      <td>{account.name}</td>
+      <td>
+        <button
+          type="button"
+          onClick={() => onAccountClick(account)}
+          className="button is-ghost is-small has-text-link p-0"
+        >
+          {account.name}
+        </button>
+      </td>
       <td>{account.bank}</td>
       <td>
         <span className="tag is-info is-light">

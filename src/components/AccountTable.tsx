@@ -8,6 +8,7 @@ interface AccountTableProps {
   accounts: Account[];
   onUpdateAccountBalance: (id: string, balance: number) => void;
   onDeleteAccount: (id: string) => void;
+  onAccountClick: (account: Account) => void;
   isLoading?: boolean;
 }
 
@@ -15,6 +16,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
   accounts,
   onUpdateAccountBalance,
   onDeleteAccount,
+  onAccountClick,
   isLoading = false
 }) => {
   const { rates } = useExchangeRates();
@@ -48,6 +50,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
               account={account}
               onUpdateAccountBalance={onUpdateAccountBalance}
               onDeleteAccount={onDeleteAccount}
+              onAccountClick={onAccountClick}
             />
           ))}
         </tbody>
