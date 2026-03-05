@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { accountsApi } from '../api/accounts';
-import { AccountFormData } from '../types/account';
 
 export const useAccounts = () => {
   const queryClient = useQueryClient();
@@ -17,9 +16,9 @@ export const useAccounts = () => {
     }
   });
 
-  const updateAccountMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<AccountFormData> }) =>
-      accountsApi.updateAccount(id, data),
+  const updateAccountBalanceMutation = useMutation({
+    mutationFn: ({ id, balance }: { id: string; balance: number }) =>
+      accountsApi.updateAccountBalance(id, balance),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
     }
@@ -32,16 +31,22 @@ export const useAccounts = () => {
     }
   });
 
+  const getAccountBalanceHistoryMutation = useMutation({
+    mutationFn: accountsApi.getAccountBalanceHistory,
+  });
+
   return {
     accounts: accountsQuery.data || [],
     isLoading: accountsQuery.isLoading,
     error: accountsQuery.error,
     createAccount: createAccountMutation.mutate,
-    updateAccount: (id: string, data: Partial<AccountFormData>) => 
-      updateAccountMutation.mutate({ id, data }),
+    updateAccountBalance: (id: string, balance: number) =>
+      updateAccountBalanceMutation.mutate({ id, balance }),
     deleteAccount: deleteAccountMutation.mutate,
+    getAccountBalanceHistory: getAccountBalanceHistoryMutation.mutate,
     isCreating: createAccountMutation.isPending,
-    isUpdating: updateAccountMutation.isPending,
-    isDeleting: deleteAccountMutation.isPending
+    isUpdatingBalance: updateAccountBalanceMutation.isPending,
+    isDeleting: deleteAccountMutation.isPending,
+    isLoadingBalanceHistory: getAccountBalanceHistoryMutation.isPending
   };
 };

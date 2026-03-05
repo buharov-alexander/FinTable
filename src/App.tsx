@@ -15,10 +15,10 @@ function AppContent() {
     isLoading,
     error,
     createAccount,
-    updateAccount,
+    updateAccountBalance,
     deleteAccount,
     isCreating,
-    isUpdating,
+    isUpdatingBalance,
     isDeleting
   } = useAccounts();
 
@@ -73,9 +73,9 @@ function AppContent() {
           ) : (
             <AccountTable
               accounts={accounts}
-              onUpdateAccount={updateAccount}
+              onUpdateAccountBalance={updateAccountBalance}
               onDeleteAccount={deleteAccount}
-              isLoading={isLoading || isUpdating || isDeleting}
+              isLoading={isLoading || isDeleting || isUpdatingBalance}
             />
           )}
         </section>

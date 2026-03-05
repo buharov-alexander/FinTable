@@ -6,14 +6,14 @@ import AccountRow from './AccountRow';
 
 interface AccountTableProps {
   accounts: Account[];
-  onUpdateAccount: (id: string, data: Partial<Account>) => void;
+  onUpdateAccountBalance: (id: string, balance: number) => void;
   onDeleteAccount: (id: string) => void;
   isLoading?: boolean;
 }
 
 const AccountTable: React.FC<AccountTableProps> = ({
   accounts,
-  onUpdateAccount,
+  onUpdateAccountBalance,
   onDeleteAccount,
   isLoading = false
 }) => {
@@ -46,7 +46,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
             <AccountRow
               key={account.id}
               account={account}
-              onUpdateAccount={onUpdateAccount}
+              onUpdateAccountBalance={onUpdateAccountBalance}
               onDeleteAccount={onDeleteAccount}
             />
           ))}

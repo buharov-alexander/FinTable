@@ -14,8 +14,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
     name: '',
     bank: '',
     type: ACCOUNT_TYPES.CASH,
-    currency: 'RUB',
-    balance: 0
+    currency: 'RUB'
   });
   const [isOpen, setIsOpen] = useState(false);
 
@@ -27,8 +26,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
         name: '',
         bank: '',
         type: ACCOUNT_TYPES.CASH,
-        currency: 'RUB',
-        balance: 0
+        currency: 'RUB'
       });
       setIsOpen(false);
     }
@@ -38,7 +36,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'balance' ? parseFloat(value) || 0 : value
+      [name]: value
     }));
   };
 
@@ -129,23 +127,6 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
                     <option value={CURRENCIES.EUR}>{CURRENCIES.EUR}</option>
                   </select>
                 </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="column is-half">
-            <div className="field">
-              <label className="label">Баланс</label>
-              <div className="control">
-                <input
-                  type="number"
-                  name="balance"
-                  value={formData.balance}
-                  onChange={handleChange}
-                  step="0.01"
-                  className="input"
-                  placeholder="0.00"
-                />
               </div>
             </div>
           </div>

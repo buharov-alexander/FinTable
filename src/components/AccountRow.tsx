@@ -1,37 +1,35 @@
 import React, { useState, useCallback } from 'react';
 import { Account } from '../types/account';
-import { ACCOUNT_TYPES, ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
-import { CURRENCIES } from '../constants/currencies';
+import { ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
 import { Edit2, Trash2, Save, X } from 'lucide-react';
 
 interface AccountRowProps {
   account: Account;
-  onUpdateAccount: (id: string, data: Partial<Account>) => void;
+  onUpdateAccountBalance: (id: string, balance: number) => void;
   onDeleteAccount: (id: string) => void;
 }
 
 const AccountRow: React.FC<AccountRowProps> = ({
   account,
-  onUpdateAccount,
+  onUpdateAccountBalance,
   onDeleteAccount
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editingData, setEditingData] = useState<Partial<Account>>({});
+  const [editingBalance, setEditingBalance] = useState<number>(0);
 
   const handleEdit = useCallback(() => {
     setIsEditing(true);
-    setEditingData({ ...account });
-  }, [account]);
+    setEditingBalance(account.balance);
+  }, [account.balance]);
 
   const handleSave = useCallback(() => {
-    onUpdateAccount(account.id, editingData);
+    onUpdateAccountBalance(account.id, editingBalance);
     setIsEditing(false);
-    setEditingData({});
-  }, [account.id, editingData, onUpdateAccount]);
+  }, [account.id, editingBalance, onUpdateAccountBalance]);
 
   const handleCancel = useCallback(() => {
     setIsEditing(false);
-    setEditingData({});
+    setEditingBalance(0);
   }, []);
 
   const handleDelete = useCallback(() => {
@@ -40,81 +38,31 @@ const AccountRow: React.FC<AccountRowProps> = ({
     }
   }, [account.id, onDeleteAccount]);
 
-  const handleFieldChange = useCallback((field: keyof Account, value: any) => {
-    setEditingData(prev => ({ ...prev, [field]: value }));
+  const handleBalanceChange = useCallback((value: number) => {
+    setEditingBalance(value);
   }, []);
 
   return (
     <tr>
+      <td>{account.name}</td>
+      <td>{account.bank}</td>
       <td>
-        {isEditing ? (
-          <input
-            type="text"
-            value={editingData.name || ''}
-            onChange={(e) => handleFieldChange('name', e.target.value)}
-            className="input is-small"
-          />
-        ) : (
-          account.name
-        )}
+        <span className="tag is-info is-light">
+          {ACCOUNT_TYPE_LABELS[account.type]}
+        </span>
       </td>
       <td>
-        {isEditing ? (
-          <input
-            type="text"
-            value={editingData.bank || ''}
-            onChange={(e) => handleFieldChange('bank', e.target.value)}
-            className="input is-small"
-          />
-        ) : (
-          account.bank
-        )}
-      </td>
-      <td>
-        {isEditing ? (
-          <div className="select is-small">
-            <select
-              value={editingData.type || ''}
-              onChange={(e) => handleFieldChange('type', e.target.value as Account['type'])}
-            >
-              <option value={ACCOUNT_TYPES.CASH}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.CASH]}</option>
-              <option value={ACCOUNT_TYPES.DEPOSIT}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.DEPOSIT]}</option>
-              <option value={ACCOUNT_TYPES.SAVINGS}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.SAVINGS]}</option>
-              <option value={ACCOUNT_TYPES.INVESTMENT}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.INVESTMENT]}</option>
-              <option value={ACCOUNT_TYPES.CRYPTO}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.CRYPTO]}</option>
-            </select>
-          </div>
-        ) : (
-          <span className="tag is-info is-light">
-            {ACCOUNT_TYPE_LABELS[account.type]}
-          </span>
-        )}
-      </td>
-      <td>
-        {isEditing ? (
-          <div className="select is-small">
-            <select
-              value={editingData.currency || ''}
-              onChange={(e) => handleFieldChange('currency', e.target.value as Account['currency'])}
-            >
-              <option value={CURRENCIES.RUB}>{CURRENCIES.RUB}</option>
-              <option value={CURRENCIES.USD}>{CURRENCIES.USD}</option>
-              <option value={CURRENCIES.EUR}>{CURRENCIES.EUR}</option>
-            </select>
-          </div>
-        ) : (
-          <span className="tag is-primary is-light">
-            {account.currency}
-          </span>
-        )}
+        <span className="tag is-primary is-light">
+          {account.currency}
+        </span>
       </td>
       <td>
         {isEditing ? (
           <input
             type="number"
             step="0.01"
-            value={editingData.balance || ''}
-            onChange={(e) => handleFieldChange('balance', parseFloat(e.target.value) || 0)}
+            value={editingBalance || ''}
+            onChange={(e) => handleBalanceChange(parseFloat(e.target.value) || 0)}
             className="input is-small"
           />
         ) : (

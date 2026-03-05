@@ -10,4 +10,4 @@ export interface Account {
   balance: number;
 }
 
-export type AccountFormData = Omit<Account, 'id'>;
+export type AccountFormData = Omit<Account, 'id' | 'balance'>;
