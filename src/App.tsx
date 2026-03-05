@@ -5,7 +5,10 @@ import AccountTable from './components/AccountTable';
 import AddAccountForm from './components/AddAccountForm';
 import ExchangeRatesWidget from './components/ExchangeRatesWidget';
 import AccountBalanceHistory from './components/AccountBalanceHistory';
+import AuthForm from './components/AuthForm';
+import UserMenu from './components/UserMenu';
 import { useAccounts } from './hooks/useAccounts';
+import { useAuth } from './hooks/useAuth';
 import { Account } from './types/account';
 import { accountsApi } from './api/accounts';
 import 'bulma/css/bulma.min.css';
@@ -14,6 +17,8 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+  
+  const { user, loading: authLoading, signIn, signUp, signOut } = useAuth();
   
   const {
     accounts,
@@ -41,6 +46,20 @@ function AppContent() {
   const handleBackToAccounts = () => {
     setSelectedAccount(null);
   };
+
+  // Показываем форму аутентификации если пользователь не авторизован
+  if (authLoading) {
+    return (
+      <div className="has-text-centered py-6">
+        <div className="loader"></div>
+        <p className="has-text-grey mt-4">Загрузка...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthForm onAuthSuccess={() => {}} signIn={signIn} signUp={signUp} />;
+  }
 
   if (error) {
     return (
@@ -73,8 +92,11 @@ function AppContent() {
                   <p className="subtitle has-text-grey">Управление банковскими счетами</p>
                 </section>
               </div>
-              <div className="ml-4">
-                <ExchangeRatesWidget />
+              <div className="ml-4 is-flex is-align-items-center">
+                <div className="mr-4">
+                  <ExchangeRatesWidget />
+                </div>
+                <UserMenu user={user} onSignOut={signOut} />
               </div>
             </div>
 
