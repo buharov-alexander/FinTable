@@ -1,5 +1,6 @@
 import { Account, AccountFormData } from '../types/account';
 import { supabase } from '../lib/supabase';
+import { exchangeRatesApi } from './exchangeRates';
 
 export const accountsApi = {
   // Получение всех счетов с текущим балансом
@@ -33,12 +34,14 @@ export const accountsApi = {
       throw new Error(accountError.message);
     }
 
-    // Добавляем начальный баланс в историю
+    // Добавляем начальный баланс в историю с курсом 1 для рубля
+    const exchangeRate = accountData.currency === 'RUB' ? 1 : 0;
     const { error: historyError } = await supabase
       .from('account_balance_history')
       .insert({
         account_id: account.id,
-        balance: 0
+        balance: 0,
+        exchange_rate: exchangeRate
       });
 
     if (historyError) {
@@ -52,24 +55,25 @@ export const accountsApi = {
     };
   },
 
-  // Обновление баланса счета
-  async updateAccountBalance(id: string, balance: number): Promise<Account> {
-    // Добавляем новую запись в историю балансов
-    const { error: historyError } = await supabase
-      .from('account_balance_history')
-      .insert({
-        account_id: id,
-        balance
-      });
-
-    if (historyError) {
-      throw new Error(historyError.message);
+  // Получение текущего курса валюты
+  async getCurrentExchangeRate(currency: string): Promise<number> {
+    if (currency === 'RUB') return 1;
+    
+    try {
+      const rates = await exchangeRatesApi.getExchangeRates();
+      return currency === 'USD' ? rates.USD : rates.EUR;
+    } catch (error) {
+      console.warn('Failed to get exchange rate, using 1 as fallback:', error);
+      return 1;
     }
+  },
 
-    // Получаем обновленный счет с новым балансом
+  // Обновление баланса счета с сохранением курса валюты
+  async updateAccountBalance(id: string, balance: number): Promise<Account> {
+    // Получаем информацию о счете для определения валюты
     const { data: account, error: accountError } = await supabase
-      .from('accounts_with_current_balance')
-      .select('*')
+      .from('accounts')
+      .select('currency')
       .eq('id', id)
       .single();
 
@@ -77,7 +81,34 @@ export const accountsApi = {
       throw new Error(accountError.message);
     }
 
-    return account;
+    // Получаем текущий курс валюты
+    const exchangeRate = await this.getCurrentExchangeRate(account.currency);
+
+    // Добавляем новую запись в историю балансов с курсом
+    const { error: historyError } = await supabase
+      .from('account_balance_history')
+      .insert({
+        account_id: id,
+        balance,
+        exchange_rate: exchangeRate
+      });
+
+    if (historyError) {
+      throw new Error(historyError.message);
+    }
+
+    // Получаем обновленный счет с новым балансом
+    const { data: updatedAccount, error: fetchError } = await supabase
+      .from('accounts_with_current_balance')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (fetchError) {
+      throw new Error(fetchError.message);
+    }
+
+    return updatedAccount;
   },
 
   // Удаление счета (каскадно удалит историю балансов)
@@ -97,10 +128,11 @@ export const accountsApi = {
     id: string;
     balance: number;
     created_at: string;
+    exchange_rate: number;
   }>> {
     const { data, error } = await supabase
       .from('account_balance_history')
-      .select('id, balance, created_at')
+      .select('id, balance, created_at, exchange_rate')
       .eq('account_id', accountId)
       .order('created_at', { ascending: false });
 

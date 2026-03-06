@@ -5,6 +5,7 @@ interface BalanceHistoryItem {
   id: string;
   balance: number;
   created_at: string;
+  exchange_rate: number;
 }
 
 interface AccountBalanceHistoryProps {
@@ -143,6 +144,7 @@ const AccountBalanceHistory: React.FC<AccountBalanceHistoryProps> = ({
                   <tr>
                     <th>Дата и время</th>
                     <th className="has-text-right">Баланс</th>
+                    <th className="has-text-right">Курс к RUB</th>
                     <th className="has-text-right">Изменение</th>
                     <th className="has-text-right">Изменение %</th>
                   </tr>
@@ -163,6 +165,22 @@ const AccountBalanceHistory: React.FC<AccountBalanceHistoryProps> = ({
                           item.balance < 0 ? 'has-text-danger' : 'has-text-success'
                         }`}>
                           {formatBalance(item.balance)}
+                        </td>
+                        <td className="has-text-right">
+                          <span className="tag is-light">
+                            {item.exchange_rate === 1 ? (
+                              <span className="has-text-grey">RUB</span>
+                            ) : (
+                              <span className="has-text-info">
+                                {new Intl.NumberFormat('ru-RU', {
+                                  style: 'currency',
+                                  currency: 'RUB',
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 4
+                                }).format(item.exchange_rate)}
+                              </span>
+                            )}
+                          </span>
                         </td>
                         <td className={`has-text-right has-text-weight-bold ${
                           isPositive ? 'has-text-success' : isNegative ? 'has-text-danger' : ''
