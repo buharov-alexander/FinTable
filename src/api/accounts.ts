@@ -141,5 +141,22 @@ export const accountsApi = {
     }
 
     return data || [];
+  },
+
+  // Получение месячных балансов
+  async getMonthlyBalances(): Promise<Array<{
+    month: string;
+    total_balance: number;
+  }>> {
+    const { data, error } = await supabase
+      .from('monthly_total_balance')
+      .select('month, total_balance')
+      .order('month', { ascending: true });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data || [];
   }
 };

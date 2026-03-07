@@ -5,6 +5,7 @@ import AccountTable from './components/AccountTable';
 import AddAccountForm from './components/AddAccountForm';
 import ExchangeRatesWidget from './components/ExchangeRatesWidget';
 import AccountBalanceHistory from './components/AccountBalanceHistory';
+import BalanceChart from './components/BalanceChart';
 import AuthForm from './components/AuthForm';
 import UserMenu from './components/UserMenu';
 import { useAccounts } from './hooks/useAccounts';
@@ -24,6 +25,8 @@ function AppContent() {
     accounts,
     isLoading,
     error,
+    monthlyBalances,
+    isLoadingMonthlyBalances,
     createAccount,
     updateAccountBalance,
     deleteAccount,
@@ -130,6 +133,24 @@ function AppContent() {
                 />
               )}
             </section>
+
+            {/* График месячных балансов */}
+            {monthlyBalances.length > 0 && (
+              <section className="section" style={{ padding: '2rem 0 0 0' }}>
+                <h2 className="title is-4 mb-4">Динамика общего баланса</h2>
+                {isLoadingMonthlyBalances ? (
+                  <div className="has-text-centered py-4">
+                    <div className="loader"></div>
+                    <p className="has-text-grey mt-2">Загрузка графика...</p>
+                  </div>
+                ) : (
+                  <BalanceChart 
+                    data={monthlyBalances} 
+                    currency="RUB" 
+                  />
+                )}
+              </section>
+            )}
           </>
         )}
       </div>

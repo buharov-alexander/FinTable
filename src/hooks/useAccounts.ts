@@ -9,10 +9,16 @@ export const useAccounts = () => {
     queryFn: accountsApi.getAccounts
   });
 
+  const monthlyBalancesQuery = useQuery({
+    queryKey: ['monthlyBalances'],
+    queryFn: accountsApi.getMonthlyBalances
+  });
+
   const createAccountMutation = useMutation({
     mutationFn: accountsApi.createAccount,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['monthlyBalances'] });
     }
   });
 
@@ -21,6 +27,7 @@ export const useAccounts = () => {
       accountsApi.updateAccountBalance(id, balance),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['monthlyBalances'] });
     }
   });
 
@@ -28,6 +35,7 @@ export const useAccounts = () => {
     mutationFn: accountsApi.deleteAccount,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['monthlyBalances'] });
     }
   });
 
@@ -39,6 +47,8 @@ export const useAccounts = () => {
     accounts: accountsQuery.data || [],
     isLoading: accountsQuery.isLoading,
     error: accountsQuery.error,
+    monthlyBalances: monthlyBalancesQuery.data || [],
+    isLoadingMonthlyBalances: monthlyBalancesQuery.isLoading,
     createAccount: createAccountMutation.mutate,
     updateAccountBalance: (id: string, balance: number) =>
       updateAccountBalanceMutation.mutate({ id, balance }),
