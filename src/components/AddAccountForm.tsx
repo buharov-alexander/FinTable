@@ -69,12 +69,12 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
       <div className="field is-grouped">
         <div className="control">
           <button
-            className={`button ${isOpen ? 'is-danger' : 'is-primary'}`}
+            className={`button ${isOpen ? 'is-danger' : 'is-primary'} is-small`}
             onClick={toggleForm}
             disabled={isLoading}
           >
-            {isOpen ? <Plus size={16} /> : <Plus size={16} />}
-            <span className="ml-2">{isOpen ? 'Отмена' : 'Добавить счет'}</span>
+            {isOpen ? <Plus size={14} /> : <Plus size={14} />}
+            <span className="ml-1 is-hidden-mobile">{isOpen ? 'Отмена' : 'Добавить'}</span>
           </button>
         </div>
       </div>
@@ -84,7 +84,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
           <div className="columns is-mobile is-multiline">
             <div className="column is-12-mobile is-half-tablet">
               <div className="field">
-                <label className="label">Название счета</label>
+                <label className="label is-small">Название счета</label>
                 <div className="control">
                   <input
                     type="text"
@@ -92,7 +92,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="input"
+                    className="input is-small"
                     placeholder="Например: Основной счет"
                     autoComplete="off"
                     autoCapitalize="words"
@@ -104,7 +104,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
             
             <div className="column is-12-mobile is-half-tablet">
               <div className="field">
-                <label className="label">Название банка</label>
+                <label className="label is-small">Название банка</label>
                 <div className="control">
                   <input
                     type="text"
@@ -112,7 +112,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
                     value={formData.bank}
                     onChange={handleChange}
                     required
-                    className="input"
+                    className="input is-small"
                     placeholder="Например: СберБанк"
                     autoComplete="organization"
                     autoCapitalize="words"
@@ -126,7 +126,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
           <div className="columns is-mobile">
             <div className="column is-12-mobile is-half-tablet">
               <div className="field">
-                <label className="label">Тип счета</label>
+                <label className="label is-small">Тип счета</label>
                 <div className="control">
                   <div className="select is-fullwidth">
                     <select
@@ -149,7 +149,7 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
             
             <div className="column is-12-mobile is-half-tablet">
               <div className="field">
-                <label className="label">Валюта</label>
+                <label className="label is-small">Валюта</label>
                 <div className="control">
                   <div className="select is-fullwidth">
                     <select
@@ -173,11 +173,11 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
             <div className="control">
               <button
                 type="submit"
-                className={`button is-primary is-fullwidth-mobile ${isLoading ? 'is-loading' : ''}`}
+                className={`button is-primary is-small is-fullwidth-mobile ${isLoading ? 'is-loading' : ''}`}
                 disabled={isLoading || !isFormValid}
               >
-                <Plus size={16} />
-                <span className="ml-2">Создать счет</span>
+                <Plus size={14} />
+                <span className="ml-1 is-hidden-mobile">Создать</span>
               </button>
             </div>
           </div>

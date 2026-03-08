@@ -89,19 +89,21 @@ function AppContent() {
         ) : (
           <>
             {/* Шапка с логотипом и курсами валют */}
-            <div className="columns is-mobile is-multiline is-align-items-center mb-4">
+            <div className="columns is-mobile is-multiline is-align-items-start mb-4">
               <div className="column is-12-mobile is-6-tablet">
-                <section className="has-text-left-mobile has-text-left-tablet">
-                  <h1 className="title is-3-mobile is-2">FinTable</h1>
-                  <p className="subtitle is-6-mobile is-5 has-text-grey">Управление счетами</p>
-                </section>
+                <div className="is-flex is-align-items-start">
+                  <section className="has-text-left-mobile has-text-left-tablet">
+                    <h1 className="title is-3-mobile is-2">FinTable</h1>
+                    <p className="subtitle is-6-mobile is-5 has-text-grey">Управление счетами</p>
+                  </section>
+                  <div className="ml-4">
+                    <UserMenu user={user} onSignOut={signOut} />
+                  </div>
+                </div>
               </div>
               <div className="column is-12-mobile is-6-tablet has-text-right-mobile has-text-right-tablet">
-                <div className="is-flex is-align-items-center is-justify-content-flex-end">
-                  <div className="mr-3-mobile mr-0-tablet">
-                    <ExchangeRatesWidget />
-                  </div>
-                  <UserMenu user={user} onSignOut={signOut} />
+                <div className="is-flex is-align-items-start is-justify-content-flex-end">
+                  <ExchangeRatesWidget />
                 </div>
               </div>
             </div>
@@ -117,21 +119,13 @@ function AppContent() {
                       </h2>
                     </div>
                     <div className="level-right">
-                      <div className="is-hidden-mobile">
+                      <div className="is-flex is-align-items-center">
                         <AddAccountForm 
                           onAddAccount={createAccount}
                           isLoading={isCreating}
                         />
                       </div>
                     </div>
-                  </div>
-
-                  {/* Мобильная кнопка добавления счета */}
-                  <div className="is-hidden-tablet mb-4">
-                    <AddAccountForm 
-                      onAddAccount={createAccount}
-                      isLoading={isCreating}
-                    />
                   </div>
 
                   {accounts.length === 0 && !isLoading ? (

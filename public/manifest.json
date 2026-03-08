@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "FinTable",
+  "name": "FinTable - Управление финансовыми счетами",
   "icons": [
     {
       "src": "favicon.ico",
