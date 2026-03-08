@@ -78,8 +78,8 @@ function AppContent() {
   }
 
   return (
-    <div className="container is-fluid" style={{ padding: '2rem 1rem' }}>
-      <div className="container" style={{ maxWidth: '1280px', margin: '0 auto' }}>
+    <div className="container is-fluid" style={{ padding: '1rem' }}>
+      <div className="container" style={{ maxWidth: '1400px', margin: '0 auto' }}>
         {selectedAccount ? (
           <AccountBalanceHistory
             account={selectedAccount}
@@ -88,67 +88,95 @@ function AppContent() {
           />
         ) : (
           <>
-            <div className="is-flex is-justify-content-space-between is-align-items-start mb-5">
-              <div style={{ flex: 1 }}>
-                <section className="section" style={{ padding: '0 0 2rem 0' }}>
-                  <h1 className="title is-2">FinTable</h1>
-                  <p className="subtitle has-text-grey">Управление банковскими счетами</p>
+            {/* Шапка с логотипом и курсами валют */}
+            <div className="columns is-mobile is-multiline is-align-items-center mb-4">
+              <div className="column is-12-mobile is-6-tablet">
+                <section className="has-text-left-mobile has-text-left-tablet">
+                  <h1 className="title is-3-mobile is-2">FinTable</h1>
+                  <p className="subtitle is-6-mobile is-5 has-text-grey">Управление счетами</p>
                 </section>
               </div>
-              <div className="ml-4 is-flex is-align-items-center">
-                <div className="mr-4">
-                  <ExchangeRatesWidget />
+              <div className="column is-12-mobile is-6-tablet has-text-right-mobile has-text-right-tablet">
+                <div className="is-flex is-align-items-center is-justify-content-flex-end">
+                  <div className="mr-3-mobile mr-0-tablet">
+                    <ExchangeRatesWidget />
+                  </div>
+                  <UserMenu user={user} onSignOut={signOut} />
                 </div>
-                <UserMenu user={user} onSignOut={signOut} />
               </div>
             </div>
 
-            <section className="section" style={{ padding: '0' }}>
-              <div className="level" style={{ marginBottom: '1.5rem' }}>
-                <div className="level-left">
-                  <h2 className="title is-4">
-                    Мои счета ({accounts.length})
-                  </h2>
-                </div>
-                <div className="level-right">
-                  <AddAccountForm 
-                    onAddAccount={createAccount}
-                    isLoading={isCreating}
-                  />
+            {/* Секция со счетами */}
+            <section className="section" style={{ padding: '0 0 3rem 0' }}>
+              <div className="columns is-mobile">
+                <div className="column is-12-mobile">
+                  <div className="level is-mobile is-align-items-center mb-5">
+                    <div className="level-left">
+                      <h2 className="title is-5-mobile is-4">
+                        Мои счета ({accounts.length})
+                      </h2>
+                    </div>
+                    <div className="level-right">
+                      <div className="is-hidden-mobile">
+                        <AddAccountForm 
+                          onAddAccount={createAccount}
+                          isLoading={isCreating}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Мобильная кнопка добавления счета */}
+                  <div className="is-hidden-tablet mb-4">
+                    <AddAccountForm 
+                      onAddAccount={createAccount}
+                      isLoading={isCreating}
+                    />
+                  </div>
+
+                  {accounts.length === 0 && !isLoading ? (
+                    <div className="box has-text-centered py-6">
+                      <p className="has-text-grey mb-3">У вас пока нет счетов</p>
+                      <p className="has-text-grey-light is-size-7">Добавьте первый счет, чтобы начать отслеживать финансы</p>
+                    </div>
+                  ) : (
+                    <div className="table-container">
+                      <AccountTable
+                        accounts={accounts}
+                        onUpdateAccountBalance={updateAccountBalance}
+                        onDeleteAccount={deleteAccount}
+                        onAccountClick={handleAccountClick}
+                        isLoading={isLoading || isDeleting || isUpdatingBalance}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
-
-              {accounts.length === 0 && !isLoading ? (
-                <div className="box has-text-centered">
-                  <p className="has-text-grey" style={{ marginBottom: '1rem' }}>У вас пока нет счетов</p>
-                  <p className="has-text-grey-light is-size-7">Добавьте первый счет, чтобы начать отслеживать финансы</p>
-                </div>
-              ) : (
-                <AccountTable
-                  accounts={accounts}
-                  onUpdateAccountBalance={updateAccountBalance}
-                  onDeleteAccount={deleteAccount}
-                  onAccountClick={handleAccountClick}
-                  isLoading={isLoading || isDeleting || isUpdatingBalance}
-                />
-              )}
             </section>
 
             {/* График месячных балансов */}
             {monthlyBalances.length > 0 && (
-              <section className="section" style={{ padding: '2rem 0 0 0' }}>
-                <h2 className="title is-4 mb-4">Динамика общего баланса</h2>
-                {isLoadingMonthlyBalances ? (
-                  <div className="has-text-centered py-4">
-                    <div className="loader"></div>
-                    <p className="has-text-grey mt-2">Загрузка графика...</p>
+              <section className="section" style={{ padding: '0' }}>
+                <div className="columns">
+                  <div className="column is-12">
+                    <h2 className="title is-5-mobile is-4 mb-4">Динамика баланса</h2>
+                    {isLoadingMonthlyBalances ? (
+                      <div className="has-text-centered py-6">
+                        <div className="loader"></div>
+                        <p className="has-text-grey mt-3">Загрузка графика...</p>
+                      </div>
+                    ) : (
+                      <div className="box" style={{ padding: '1.5rem' }}>
+                        <div style={{ height: '300px min-height: 250px' }}>
+                          <BalanceChart 
+                            data={monthlyBalances} 
+                            currency="RUB" 
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <BalanceChart 
-                    data={monthlyBalances} 
-                    currency="RUB" 
-                  />
-                )}
+                </div>
               </section>
             )}
           </>

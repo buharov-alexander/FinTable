@@ -55,14 +55,14 @@ const AccountRow: React.FC<AccountRowProps> = ({
           {account.name}
         </button>
       </td>
-      <td>{account.bank}</td>
-      <td>
+      <td className="is-hidden-mobile">{account.bank}</td>
+      <td className="is-hidden-mobile">
         <span className="tag is-info is-light">
           {ACCOUNT_TYPE_LABELS[account.type]}
         </span>
       </td>
       <td>
-        <span className="tag is-primary is-light">
+        <span className="tag is-primary is-light is-size-7">
           {account.currency}
         </span>
       </td>
@@ -85,7 +85,7 @@ const AccountRow: React.FC<AccountRowProps> = ({
         )}
       </td>
       <td>
-        <div className="buttons are-small">
+        <div className="buttons is-flex is-justify-content-flex-end">
           {isEditing ? (
             <>
               <button

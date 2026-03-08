@@ -32,15 +32,15 @@ const AccountTable: React.FC<AccountTableProps> = ({
 
   return (
     <div className="table-container">
-      <table className="table is-fullwidth is-striped is-hoverable">
+      <table className="table is-fullwidth is-hoverable">
         <thead>
           <tr>
-            <th className="has-text-grey">Название счета</th>
-            <th className="has-text-grey">Название банка</th>
-            <th className="has-text-grey">Тип счета</th>
-            <th className="has-text-grey">Валюта</th>
-            <th className="has-text-grey">Баланс</th>
-            <th className="has-text-grey">Действия</th>
+            <th className="is-hidden-mobile">Название</th>
+            <th className="is-hidden-mobile">Банк</th>
+            <th className="is-hidden-mobile">Тип</th>
+            <th>Валюта</th>
+            <th>Баланс</th>
+            <th className="has-text-right">Действия</th>
           </tr>
         </thead>
         <tbody>
@@ -54,22 +54,25 @@ const AccountTable: React.FC<AccountTableProps> = ({
             />
           ))}
         </tbody>
-        {rates && (
+        {accounts.length > 0 && (
           <tfoot>
-            <tr className="has-background-light has-text-weight-bold">
-              <td colSpan={4} className="has-text-right">
-                Итого:
-              </td>
-              <td colSpan={2} className="has-text-success">
-                {new Intl.NumberFormat('ru-RU', {
+            <tr>
+              <td colSpan={6} className="has-text-right has-text-weight-bold">
+                Итого: {new Intl.NumberFormat('ru-RU', {
                   style: 'currency',
-                  currency: 'RUB',
-                }).format(calculateTotalBalance(accounts, rates))}
+                  currency: 'RUB'
+                }).format(calculateTotalBalance(accounts, rates || { USD: 0, EUR: 0 }))}
               </td>
             </tr>
           </tfoot>
         )}
       </table>
+      
+      {accounts.length === 0 && !isLoading && (
+        <div className="has-text-centered py-6">
+          <p className="has-text-grey">Счета не найдены</p>
+        </div>
+      )}
     </div>
   );
 };

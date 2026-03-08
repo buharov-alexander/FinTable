@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AccountFormData } from '../types/account';
 import { ACCOUNT_TYPES, ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
-import { CURRENCIES } from '../constants/currencies';
 import { Plus } from 'lucide-react';
 
 interface AddAccountFormProps {
@@ -40,119 +39,150 @@ const AddAccountForm: React.FC<AddAccountFormProps> = ({ onAddAccount, isLoading
     }));
   };
 
+  const toggleForm = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const isFormValid = formData.name && formData.bank && formData.type && formData.currency;
+
   if (!isOpen) {
     return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="button is-primary"
-      >
-        <Plus size={20} />
-        <span>Добавить счет</span>
-      </button>
+      <div className="box">
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              className={`button ${isOpen ? 'is-danger' : 'is-primary'}`}
+              onClick={toggleForm}
+              disabled={isLoading}
+            >
+              {isOpen ? <Plus size={16} /> : <Plus size={16} />}
+              <span className="ml-2">{isOpen ? 'Отмена' : 'Добавить счет'}</span>
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
     <div className="box">
-      <h3 className="title is-5">Добавить новый счет</h3>
-      <form onSubmit={handleSubmit}>
-        <div className="columns is-multiline">
-          <div className="column is-half">
-            <div className="field">
-              <label className="label">Название счета</label>
-              <div className="control">
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="input"
-                  placeholder="Например: Основной счет"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div className="column is-half">
-            <div className="field">
-              <label className="label">Название банка</label>
-              <div className="control">
-                <input
-                  type="text"
-                  name="bank"
-                  value={formData.bank}
-                  onChange={handleChange}
-                  required
-                  className="input"
-                  placeholder="Например: СберБанк"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div className="column is-half">
-            <div className="field">
-              <label className="label">Тип счета</label>
-              <div className="control">
-                <div className="select is-fullwidth">
-                  <select
-                    name="type"
-                    value={formData.type}
+      <div className="field is-grouped">
+        <div className="control">
+          <button
+            className={`button ${isOpen ? 'is-danger' : 'is-primary'}`}
+            onClick={toggleForm}
+            disabled={isLoading}
+          >
+            {isOpen ? <Plus size={16} /> : <Plus size={16} />}
+            <span className="ml-2">{isOpen ? 'Отмена' : 'Добавить счет'}</span>
+          </button>
+        </div>
+      </div>
+
+      {isOpen && (
+        <form onSubmit={handleSubmit} className="mt-4">
+          <div className="columns is-mobile is-multiline">
+            <div className="column is-12-mobile is-half-tablet">
+              <div className="field">
+                <label className="label">Название счета</label>
+                <div className="control">
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
-                  >
-                    <option value={ACCOUNT_TYPES.CASH}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.CASH]}</option>
-                    <option value={ACCOUNT_TYPES.DEPOSIT}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.DEPOSIT]}</option>
-                    <option value={ACCOUNT_TYPES.SAVINGS}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.SAVINGS]}</option>
-                    <option value={ACCOUNT_TYPES.INVESTMENT}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.INVESTMENT]}</option>
-                    <option value={ACCOUNT_TYPES.CRYPTO}>{ACCOUNT_TYPE_LABELS[ACCOUNT_TYPES.CRYPTO]}</option>
-                  </select>
+                    required
+                    className="input"
+                    placeholder="Например: Основной счет"
+                    autoComplete="off"
+                    autoCapitalize="words"
+                    spellCheck="true"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="column is-12-mobile is-half-tablet">
+              <div className="field">
+                <label className="label">Название банка</label>
+                <div className="control">
+                  <input
+                    type="text"
+                    name="bank"
+                    value={formData.bank}
+                    onChange={handleChange}
+                    required
+                    className="input"
+                    placeholder="Например: СберБанк"
+                    autoComplete="organization"
+                    autoCapitalize="words"
+                    spellCheck="true"
+                  />
                 </div>
               </div>
             </div>
           </div>
-          
-          <div className="column is-half">
-            <div className="field">
-              <label className="label">Валюта</label>
-              <div className="control">
-                <div className="select is-fullwidth">
-                  <select
-                    name="currency"
-                    value={formData.currency}
-                    onChange={handleChange}
-                  >
-                    <option value={CURRENCIES.RUB}>{CURRENCIES.RUB}</option>
-                    <option value={CURRENCIES.USD}>{CURRENCIES.USD}</option>
-                    <option value={CURRENCIES.EUR}>{CURRENCIES.EUR}</option>
-                  </select>
+
+          <div className="columns is-mobile">
+            <div className="column is-12-mobile is-half-tablet">
+              <div className="field">
+                <label className="label">Тип счета</label>
+                <div className="control">
+                  <div className="select is-fullwidth">
+                    <select
+                      name="type"
+                      value={formData.type}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Выберите тип</option>
+                      {Object.entries(ACCOUNT_TYPE_LABELS).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="column is-12-mobile is-half-tablet">
+              <div className="field">
+                <label className="label">Валюта</label>
+                <div className="control">
+                  <div className="select is-fullwidth">
+                    <select
+                      name="currency"
+                      value={formData.currency}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Выберите валюту</option>
+                      <option value="RUB">RUB</option>
+                      <option value="USD">USD</option>
+                      <option value="EUR">EUR</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div className="field is-grouped">
-          <div className="control">
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="button is-primary"
-            >
-              {isLoading ? 'Сохранение...' : 'Добавить'}
-            </button>
+
+          <div className="field is-grouped mt-4">
+            <div className="control">
+              <button
+                type="submit"
+                className={`button is-primary is-fullwidth-mobile ${isLoading ? 'is-loading' : ''}`}
+                disabled={isLoading || !isFormValid}
+              >
+                <Plus size={16} />
+                <span className="ml-2">Создать счет</span>
+              </button>
+            </div>
           </div>
-          <div className="control">
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="button is-light"
-            >
-              Отмена
-            </button>
-          </div>
-        </div>
-      </form>
+        </form>
+      )}
     </div>
   );
 };
