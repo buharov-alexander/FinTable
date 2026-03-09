@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, Calendar, Trash2 } from 'lucide-react';
 
 interface BalanceHistoryItem {
   id: string;
@@ -19,12 +19,14 @@ interface AccountBalanceHistoryProps {
   };
   onBack: () => void;
   getAccountBalanceHistory: (accountId: string) => Promise<BalanceHistoryItem[]>;
+  onDeleteBalanceHistoryEntry?: (id: string) => void;
 }
 
 const AccountBalanceHistory: React.FC<AccountBalanceHistoryProps> = ({
   account,
   onBack,
-  getAccountBalanceHistory
+  getAccountBalanceHistory,
+  onDeleteBalanceHistoryEntry
 }) => {
   const [history, setHistory] = useState<BalanceHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,7 +40,7 @@ const AccountBalanceHistory: React.FC<AccountBalanceHistoryProps> = ({
         const data = await getAccountBalanceHistory(account.id);
         setHistory(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Ошибка загрузки истории');
+        setError(err instanceof Error ? err.message : 'Не удалось загрузить историю');
       } finally {
         setIsLoading(false);
       }
@@ -46,6 +48,19 @@ const AccountBalanceHistory: React.FC<AccountBalanceHistoryProps> = ({
 
     loadHistory();
   }, [account.id, getAccountBalanceHistory]);
+
+  const handleDeleteEntry = async (id: string) => {
+    if (!onDeleteBalanceHistoryEntry) return;
+    
+    if (window.confirm('Вы уверены, что хотите удалить эту запись из истории?')) {
+      try {
+        await onDeleteBalanceHistoryEntry(id);
+        setHistory(prev => prev.filter(item => item.id !== id));
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Не удалось удалить запись');
+      }
+    }
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('ru-RU', {
@@ -147,6 +162,7 @@ const AccountBalanceHistory: React.FC<AccountBalanceHistoryProps> = ({
                     <th className="has-text-right">Курс к RUB</th>
                     <th className="has-text-right">Изменение</th>
                     <th className="has-text-right">Изменение %</th>
+                    <th className="has-text-right">Действия</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -200,6 +216,17 @@ const AccountBalanceHistory: React.FC<AccountBalanceHistoryProps> = ({
                             <span>
                               {isPositive && '+'}{percentage.toFixed(2)}%
                             </span>
+                          )}
+                        </td>
+                        <td className="has-text-right">
+                          {onDeleteBalanceHistoryEntry && (
+                            <button
+                              onClick={() => handleDeleteEntry(item.id)}
+                              className="button is-danger is-small"
+                              title="Удалить запись"
+                            >
+                              <Trash2 size={14} />
+                            </button>
                           )}
                         </td>
                       </tr>

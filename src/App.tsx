@@ -30,9 +30,11 @@ function AppContent() {
     createAccount,
     updateAccountBalance,
     deleteAccount,
+    deleteBalanceHistoryEntry,
     isCreating,
     isUpdatingBalance,
-    isDeleting
+    isDeleting,
+    isDeletingBalanceHistory
   } = useAccounts();
 
   const handleAccountClick = useCallback((account: Account) => {
@@ -85,6 +87,7 @@ function AppContent() {
             account={selectedAccount}
             onBack={handleBackToAccounts}
             getAccountBalanceHistory={handleGetAccountBalanceHistory}
+            onDeleteBalanceHistoryEntry={deleteBalanceHistoryEntry}
           />
         ) : (
           <>

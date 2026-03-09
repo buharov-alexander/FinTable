@@ -43,6 +43,14 @@ export const useAccounts = () => {
     mutationFn: accountsApi.getAccountBalanceHistory,
   });
 
+  const deleteBalanceHistoryEntryMutation = useMutation({
+    mutationFn: accountsApi.deleteBalanceHistoryEntry,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['monthlyBalances'] });
+    }
+  });
+
   return {
     accounts: accountsQuery.data || [],
     isLoading: accountsQuery.isLoading,
@@ -54,9 +62,11 @@ export const useAccounts = () => {
       updateAccountBalanceMutation.mutate({ id, balance }),
     deleteAccount: deleteAccountMutation.mutate,
     getAccountBalanceHistory: getAccountBalanceHistoryMutation.mutate,
+    deleteBalanceHistoryEntry: deleteBalanceHistoryEntryMutation.mutate,
     isCreating: createAccountMutation.isPending,
     isUpdatingBalance: updateAccountBalanceMutation.isPending,
     isDeleting: deleteAccountMutation.isPending,
-    isLoadingBalanceHistory: getAccountBalanceHistoryMutation.isPending
+    isLoadingBalanceHistory: getAccountBalanceHistoryMutation.isPending,
+    isDeletingBalanceHistory: deleteBalanceHistoryEntryMutation.isPending
   };
 };

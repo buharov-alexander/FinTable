@@ -158,5 +158,17 @@ export const accountsApi = {
     }
 
     return data || [];
+  },
+
+  // Удаление записи из истории балансов
+  async deleteBalanceHistoryEntry(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('account_balance_history')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
   }
 };
