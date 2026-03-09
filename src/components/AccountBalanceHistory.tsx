@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, Trash2 } from 'lucide-react';
+import { ACCOUNT_TYPE_LABELS } from '../constants/accountTypes';
+import { Account } from '../types/account';
 
 interface BalanceHistoryItem {
   id: string;
@@ -9,14 +11,7 @@ interface BalanceHistoryItem {
 }
 
 interface AccountBalanceHistoryProps {
-  account: {
-    id: string;
-    name: string;
-    bank: string;
-    type: string;
-    currency: string;
-    balance: number;
-  };
+  account: Account;
   onBack: () => void;
   getAccountBalanceHistory: (accountId: string) => Promise<BalanceHistoryItem[]>;
   onDeleteBalanceHistoryEntry?: (id: string) => void;
@@ -127,7 +122,7 @@ const AccountBalanceHistory: React.FC<AccountBalanceHistoryProps> = ({
               <div className="column">
                 <p className="subtitle has-text-grey mb-0">{account.bank}</p>
                 <div className="tags">
-                  <span className="tag is-info is-light">{account.type}</span>
+                  <span className="tag is-info is-light">{ACCOUNT_TYPE_LABELS[account.type]}</span>
                   <span className="tag is-primary is-light">{account.currency}</span>
                 </div>
               </div>
