@@ -34,7 +34,6 @@ function AppContent() {
     isCreating,
     isUpdatingBalance,
     isDeleting,
-    isDeletingBalanceHistory
   } = useAccounts();
 
   const handleAccountClick = useCallback((account: Account) => {
