@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AuthError | null>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     // Получаем начальную сессию
@@ -32,11 +34,16 @@ export const useAuth = () => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Очищаем кэш при смене пользователя
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+          queryClient.clear();
+        }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [queryClient]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -75,6 +82,9 @@ export const useAuth = () => {
       setError(null);
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
+      // Очищаем кэш запросов при выходе
+      queryClient.clear();
     } catch (err) {
       setError(err as AuthError);
       throw err;

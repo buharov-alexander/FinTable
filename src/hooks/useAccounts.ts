@@ -1,17 +1,21 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { accountsApi } from '../api/accounts';
+import { useAuth } from './useAuth';
 
 export const useAccounts = () => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const accountsQuery = useQuery({
     queryKey: ['accounts'],
-    queryFn: accountsApi.getAccounts
+    queryFn: accountsApi.getAccounts,
+    enabled: !!user // Запускать только когда пользователь авторизован
   });
 
   const monthlyBalancesQuery = useQuery({
     queryKey: ['monthlyBalances'],
-    queryFn: accountsApi.getMonthlyBalances
+    queryFn: accountsApi.getMonthlyBalances,
+    enabled: !!user // Запускать только когда пользователь авторизован
   });
 
   const createAccountMutation = useMutation({
