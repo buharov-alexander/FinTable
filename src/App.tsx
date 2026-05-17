@@ -13,11 +13,13 @@ import { useAuth } from './hooks/useAuth';
 import { Account } from './types/account';
 import { accountsApi } from './api/accounts';
 import 'bulma/css/bulma.min.css';
+import './App.css';
 
 const queryClient = new QueryClient();
 
 function AppContent() {
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+  const [hideZeroBalance, setHideZeroBalance] = useState(false);
   
   const { user, loading: authLoading, signIn, signUp, signOut } = useAuth();
   
@@ -50,6 +52,10 @@ function AppContent() {
   const handleBackToAccounts = () => {
     setSelectedAccount(null);
   };
+
+  const filteredAccounts = hideZeroBalance
+    ? accounts.filter(account => account.balance !== 0)
+    : accounts;
 
   // Показываем форму аутентификации если пользователь не авторизован
   if (authLoading) {
@@ -116,9 +122,22 @@ function AppContent() {
                 <div className="column is-12-mobile">
                   <div className="level is-mobile is-align-items-center mb-5">
                     <div className="level-left">
-                      <h2 className="title is-5-mobile is-4">
-                        Мои счета ({accounts.length})
-                      </h2>
+                      <div className="is-flex is-align-items-center">
+                        <h2 className="title is-5-mobile is-4 mb-0 mr-3">
+                          Мои счета ({filteredAccounts.length})
+                        </h2>
+                        <div className="is-flex is-align-items-center">
+                          <label className="toggle-switch">
+                            <input
+                              type="checkbox"
+                              checked={hideZeroBalance}
+                              onChange={(e) => setHideZeroBalance(e.target.checked)}
+                            />
+                            <span className="toggle-slider"></span>
+                          </label>
+                          <span className="ml-2 is-size-7">Скрыть нулевые</span>
+                        </div>
+                      </div>
                     </div>
                     <div className="level-right">
                       <div className="is-flex is-align-items-center">
@@ -138,7 +157,7 @@ function AppContent() {
                   ) : (
                     <div className="table-container">
                       <AccountTable
-                        accounts={accounts}
+                        accounts={filteredAccounts}
                         onUpdateAccountBalance={updateAccountBalance}
                         onDeleteAccount={deleteAccount}
                         onAccountClick={handleAccountClick}
